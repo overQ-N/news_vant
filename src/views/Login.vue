@@ -43,24 +43,22 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$axios)
   },
   methods: {
-    onSubmit (values) {
-      this.$axios({
-        url: 'login',
-        data: this.loginForm,
-        method: 'post'
-      }).then(res => {
-        console.log(res)
-      })
-      // const { data: res } = await this.$axios.post(
-      //   'login',
-      //   this.loginForm
-      // )
+    async onSubmit (values) {
+      const { data: res } = await this.$axios.post(
+        'login',
+        this.loginForm
+      )
+      console.log(res)
+      const userinfo = {
+        token: res.data.token,
+        id: res.data.user.id
+      }
+      sessionStorage.setItem('news_token', JSON.stringify(userinfo))
       // if (res.meta.status !== 200) return this.$toast.fail(res.meta.msg)
-      // this.$toast.success('登录成功')
-      // this.$router.push('/home')
+      this.$toast.success('登录成功')
+      this.$router.push('/home')
     },
     regist () {
       this.$router.push('/regist')

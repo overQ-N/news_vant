@@ -13,5 +13,17 @@ const routes = [
 const router = new VueRouter({
   routes
 })
-
+router.beforeEach((to, from, next) => {
+  if (to.path === '/') {
+    next()
+  }
+  if (to.path === '/personal') {
+    const token = JSON.parse(sessionStorage.getItem('news_token')) || ''
+    if (token) {
+      next()
+    } else {
+      next('/')
+    }
+  }
+})
 export default router

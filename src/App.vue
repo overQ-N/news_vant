@@ -5,6 +5,12 @@
 </template>
 
 <style lang='stylus'>
+$bg = #f2f2f2
+$font-color = #cc3300
+$vw_base = 750
+
+vw(x)
+  (x / $vw_base) * 100vw
 @import url("//at.alicdn.com/t/font_1426139_jm7n2373nlh.css");
 html,body,#app
   height 100%
