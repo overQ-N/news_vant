@@ -3,7 +3,13 @@
     <router-view/>
   </div>
 </template>
-
+<script>
+export default {
+  mouted () {
+    console.log(this.$route.path)
+  }
+}
+</script>
 <style lang='stylus'>
 $bg = #f2f2f2
 $font-color = #cc3300

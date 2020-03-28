@@ -51,14 +51,18 @@ export default {
         this.loginForm
       )
       console.log(res)
+      this.$store.dispatch('getUserInfoAsync', res.data)
       const userinfo = {
         token: res.data.token,
         id: res.data.user.id
       }
+
+      console.log(JSON.stringify(userinfo))
+
       sessionStorage.setItem('news_token', JSON.stringify(userinfo))
       // if (res.meta.status !== 200) return this.$toast.fail(res.meta.msg)
       this.$toast.success('登录成功')
-      this.$router.push('/home')
+      this.$router.push('/personal')
     },
     regist () {
       this.$router.push('/regist')

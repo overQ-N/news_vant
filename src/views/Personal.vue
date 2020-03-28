@@ -1,6 +1,7 @@
 <template>
   <div class="container">
-    <div class="header">
+    <navBar label="个人中心" :showHome='true'></navBar>
+      <div class="header">
       <div class="user">
         <div class="img"><img :src="$axios.defaults.baseURL+userinfo.head_img" alt=""></div>
         <div class="userInfo">
@@ -12,7 +13,7 @@
           <p>{{userinfo.create_date | formatDate}}</p>
         </div>
       </div>
-      <i class="iconfont iconjiantou1"></i>
+      <i class="iconfont iconjiantou1" @click="$router.push({name:'editProfile',params:{userinfo}})"></i>
     </div>
     <div class="main">
       <listBar v-for="(item,index) in barData" :key="index" :label='item.label' :tips='item.tips'>
@@ -24,6 +25,7 @@
 
 <script>
 import listBar from '../components/ListBar'
+import navBar from '../components/NavBar'
 export default {
   data () {
     return {
@@ -42,13 +44,13 @@ export default {
     this.getUserInfo()
   },
   components: {
-    listBar
+    listBar,
+    navBar
   },
   methods: {
     async  getUserInfo () {
       const id = JSON.parse(sessionStorage.getItem('news_token')).id
       const { data: res } = await this.$axios.get('user/' + id)
-      console.log(res)
       this.userinfo = res.data
     }
   }
