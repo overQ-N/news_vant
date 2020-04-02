@@ -7,11 +7,41 @@ const routes = [
   { path: '/', component: () => import('../views/Home.vue') },
   { path: '/login', component: () => import('../views/Login.vue') },
   { path: '/regist', component: () => import('../views/Regist.vue') },
-  { path: '/personal', component: () => import('../views/Personal.vue') },
+  {
+    path: '/personal',
+    component: () => import('../views/Personal.vue'),
+    meta: {
+      Authorazation: true
+    }
+  },
   {
     name: 'editProfile',
     path: '/edit-profile',
-    component: () => import('../views/EditProfile.vue')
+    component: () => import('../views/EditProfile.vue'),
+    meta: {
+      Authorazation: true
+    }
+  },
+  {
+    path: '/comments',
+    component: () => import('../views/Comments.vue'),
+    meta: {
+      Authorazation: true
+    }
+  },
+  {
+    path: '/star',
+    component: () => import('../views/Star.vue'),
+    meta: {
+      Authorazation: true
+    }
+  },
+  {
+    path: '/follow',
+    component: () => import('../views/Follow.vue'),
+    meta: {
+      Authorazation: true
+    }
   }
 ]
 
@@ -19,14 +49,24 @@ const router = new VueRouter({
   routes
 })
 router.beforeEach((to, from, next) => {
-  if (to.path === '/login' || to.path === '/home') {
-    next()
-  }
-  const token = JSON.parse(sessionStorage.getItem('news_token')) || ''
-  if (token) {
-    next()
+  // if (to.path === '/login') {
+  //   return next()
+  // }
+  // const token = JSON.parse(sessionStorage.getItem('news_token')) || ''
+  // if (token) {
+  //   next()
+  // } else {
+  //   next('/login')
+  // }
+  if (to.meta.Authorazation) {
+    const token = JSON.parse(sessionStorage.getItem('news_token')) || ''
+    if (token) {
+      next()
+    } else {
+      next('/login')
+    }
   } else {
-    next('/login')
+    next()
   }
 })
 export default router

@@ -20,6 +20,7 @@ vw(x)
 @import url("//at.alicdn.com/t/font_1426139_jm7n2373nlh.css");
 html,body,#app
   height 100%
+  background $bg
 *{
     margin: 0;
     padding: 0;

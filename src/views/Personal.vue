@@ -16,7 +16,7 @@
       <i class="iconfont iconjiantou1" @click="$router.push({name:'editProfile',params:{userinfo}})"></i>
     </div>
     <div class="main">
-      <listBar v-for="(item,index) in barData" :key="index" :label='item.label' :tips='item.tips'>
+      <listBar v-for="(item,index) in barData" :key="index" :path="item.path?item.path:''" :label='item.label' :tips='item.tips'>
 
       </listBar>
     </div>
@@ -30,9 +30,9 @@ export default {
   data () {
     return {
       barData: [
-        { label: '我的关注', tips: '关注的用户' },
-        { label: '我的跟帖', tips: '跟帖/回复' },
-        { label: '我的收藏', tips: '文章/视频' },
+        { label: '我的关注', tips: '关注的用户', path: '/follow' },
+        { label: '我的跟帖', tips: '跟帖/回复', path: '/comments' },
+        { label: '我的收藏', tips: '文章/视频', path: '/star' },
         { label: '设置', tips: '' }
       ],
       userinfo: {

@@ -1,13 +1,13 @@
 <template>
   <div class="listBar">
     <span>{{label}}</span>
-    <div><span>{{tips}}</span><i class="iconfont iconjiantou1"></i></div>
+    <div><router-link :to='path?path:""'><span>{{tips}}</span><i class="iconfont iconjiantou1"></i></router-link></div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['label', 'tips']
+  props: ['label', 'tips', 'path']
 }
 </script>
 

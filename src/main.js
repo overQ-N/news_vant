@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import axios from 'axios'
 // import qs from 'qs'
-import { Button, Toast, Form, Field, Uploader, Dialog, ActionSheet } from 'vant'
+import { Button, List, Toast, Form, Field, Uploader, Dialog, ActionSheet, Tab, Tabs } from 'vant'
 import store from './store'
 Vue.use(Button, Toast, Form, Field)
 Vue.use(Field)
@@ -11,6 +11,9 @@ Vue.use(Form)
 Vue.use(Uploader)
 Vue.use(Dialog)
 Vue.use(ActionSheet)
+Vue.use(Tab)
+Vue.use(Tabs)
+Vue.use(List)
 Vue.config.productionTip = false
 // axios.defaults.baseURL = 'http://127.0.0.1:3000/'
 
@@ -23,13 +26,27 @@ axios.interceptors.request.use(config => {
   }
   return config
 })
+axios.interceptors.response.use(res => {
+  return res
+}, err => {
+  console.log(err.response)
+  const { statusCode, message } = err.response.data
+  if (statusCode === 400) Toast.fail(message)
+  return Promise.reject(err)
+})
 Vue.filter('formatDate', (val) => {
   const date = new Date(val)
   const Y = date.getFullYear()
   const M = date.getMonth() + 1
   const D = date.getDate()
-  return `${Y}-${M}-${D}`
+  const H = date.getHours()
+  const S = date.getMinutes()
+  return [Y, M, D].map(formatNumber).join('-') + ' ' + [H, S].map(formatNumber).join(':')
 })
+const formatNumber = (n) => {
+  n = n.toString()
+  return n[1] ? n : '0' + n
+}
 new Vue({
   store,
   router,
