@@ -18,6 +18,12 @@ export default {
 </script>
 
 <style lang='stylus' scoped>
+$bg = #f2f2f2
+$font-color = #cc3300
+$vw_base = 750
+
+vw(x)
+  (x / $vw_base) * 100vw
 .noPic
   padding: 0 vw(25)
   border-bottom: solid 1px #e4e4e4

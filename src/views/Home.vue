@@ -8,12 +8,13 @@
       <i class="iconfont iconwode"></i>
     </div>
     <div class="tab">
-      <van-tabs v-model="active" sticky swipeable>
-        <van-tab v-for="item in categories" :title="item.name" :key="item.id">
+      <van-tabs v-model="active" sticky swipeable  @scroll='handleScroll'>
+        <van-tab v-for="item in categories" :title="item.name" :key="item.id" >
+           <!-- :immediate-check='false' -->
           <van-list
-          :immediate-check='false'
-          v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-            <div v-for="(item1,index) in list" :key="index">
+
+          v-model="item.loading" :finished="item.finished" finished-text="没有更多了" @load="onLoad">
+            <div v-for="(item1,index) in item.list" :key="index">
               <SinglePic :data='item1'  v-if="item1.cover.length>0&&item1.type===1"/>
               <ThreePic :data='item1' v-if="item1.cover.length>=3&&item1.type===1"/>
               <Nopic :data='item1' v-if="item1.cover.length>=0&&item1.type===2"/>
@@ -35,33 +36,48 @@ export default {
       // 文章列表数据
       list: [],
       // 当前tab栏激活的索引
-      active: 0,
+      active: 0
       // 是否正在加载
-      loading: false,
+      // loading: false,
       // 获取数据是否完成
-      finished: false
+      // finished: false
     }
   },
   mounted () {
     const newstoken = JSON.parse(sessionStorage.getItem('news_token')) || {}
     const token = newstoken.token ? newstoken.token : ''
-    const hasFollow = this.categories.filter(v => v.name === '关注')
-    if (token && hasFollow.length === 0) {
-      this._getCategories()
+    const newsInfo = JSON.parse(localStorage.getItem('news_info')) || []
+    const hasFollow = newsInfo ? newsInfo.filter(v => v.name === '关注') : []
+    console.log(newsInfo, hasFollow)
+    // 如果有本地数据
+    if (newsInfo.length !== 0) {
+      // 如果有token并且没有关注列表，重新请求
+      if (token && hasFollow.length === 0) {
+        this._getCategories()
+      } else if (!token && hasFollow.length > 0) { // 如果没有token但有关注列表，重新请求
+        this._getCategories()
+      } else {
+        this.categories = newsInfo
+      }
+    } else {
+      // 如果没有本地数据
+      if (token) {
+        this._getCategories() // 如果有登录，获取关注列表数据
+      } else {
+        this._getCategories() // 如果没有登录，获取头条列表数据
+      }
     }
-    if (!token) {
-      this._getCategories()
-    }
-    this._getPost(999)
   },
   watch: {
-    async active () {
-      console.log(this.categories[this.active].id)
+    active () {
       if (this.active === this.categories.length - 1) {
         this.$router.push('/ssssssss')
       }
-      this.list = []
+      // this.list = []
       this._getPost(this.categories[this.active].id)
+      setTimeout(() => {
+        window.scroll(0, this.categories[this.active].scrollY)
+      }, 20)
     }
   },
   components: {
@@ -77,34 +93,40 @@ export default {
       const categories = res.data.map(v => {
         v.pageIndex = 1
         v.pageSize = 10
-        v.total = res.total
+        v.loading = false
+        v.finished = false
+        v.list = []
+        v.scrollY = 0 // 记录距离顶部的坐标
         return v
       })
       this.categories = categories
-      console.log('cate', this.categories)
+      console.log(this.categories[this.active].id)
+      this._getPost(this.categories[this.active].id)
+      // 将栏目列表存到localstorage
+      localStorage.setItem('news_info', JSON.stringify(this.categories))
     },
+    // 获取文章列表
     async _getPost (id, pageIndex = 1, pageSize = 10) {
-      console.log('pages', pageIndex)
+      const cate = this.categories[this.active]
+      if (cate.finished) return
       const { data: res } = await this.$axios.get('/post', {
         params:
       { category: id, pageIndex, pageSize }
       })
-      console.log('res.data', res.data)
-      this.list = [...this.list, ...res.data]
-      const cate = this.categories.findIndex(v => v.id === id)
-      if (cate !== -1) {
-        this.categories[cate].total = res.total
+      cate.list = [...cate.list, ...res.data]
+      cate.loading = false
+      if (!res.total || res.total === cate.list.length || res.data.length === 0) {
+        cate.finished = true
       }
-      this.loading = false
-      console.log(this.categories[cate].total, this.list.length)
-      if (this.categories[cate].total === this.list.length) {
-        this.finished = true
-      }
-      console.log('post', res.data)
     },
+    // 滚动到底部获取分页数据
     onLoad () {
       this.categories[this.active].pageIndex = this.categories[this.active].pageIndex + 1
       this._getPost(this.categories[this.active].id, this.categories[this.active].pageIndex)
+    },
+    handleScroll ({ scrollTop }) {
+      if (this.categories.length === 0) return
+      this.categories[this.active].scrollY = scrollTop
     }
   }
 }
