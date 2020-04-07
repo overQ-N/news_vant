@@ -1,6 +1,8 @@
 <template>
   <div id="app">
+    <keep-alive include="home,search">
     <router-view/>
+    </keep-alive>
   </div>
 </template>
 <script>

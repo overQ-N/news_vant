@@ -2,14 +2,15 @@
   <div>
     <div class="header">
       <i class="iconfont iconnew"></i>
-      <router-link to="#" tag="div" class="search-box">
+      <router-link to="/search" tag="div" class="search-box">
         <i class="iconfont iconsearch"></i>搜索新闻
       </router-link>
       <i class="iconfont iconwode"></i>
     </div>
     <div class="tab">
       <van-tabs v-model="active" sticky swipeable  @scroll='handleScroll'>
-        <van-tab v-for="item in categories" :title="item.name" :key="item.id" >
+        <van-tab v-for="item in cates"
+        :title="item.name" :key="item.id" >
            <!-- :immediate-check='false' -->
           <van-list
 
@@ -29,6 +30,7 @@
 <script>
 import Pic from '@/components/pic/index.js'
 export default {
+  name: 'home',
   data () {
     return {
       // 栏目列表
@@ -48,7 +50,6 @@ export default {
     const token = newstoken.token ? newstoken.token : ''
     const newsInfo = JSON.parse(localStorage.getItem('news_info')) || []
     const hasFollow = newsInfo ? newsInfo.filter(v => v.name === '关注') : []
-    console.log(newsInfo, hasFollow)
     // 如果有本地数据
     if (newsInfo.length !== 0) {
       // 如果有token并且没有关注列表，重新请求
@@ -70,14 +71,20 @@ export default {
   },
   watch: {
     active () {
-      if (this.active === this.categories.length - 1) {
-        this.$router.push('/ssssssss')
+      if (this.active === this.cates.length - 1) {
+        this.$router.push('/catemanage')
       }
       // this.list = []
-      this._getPost(this.categories[this.active].id)
+      console.log(this.cates)
+      this._getPost(this.cates[this.active].id)
       setTimeout(() => {
-        window.scroll(0, this.categories[this.active].scrollY)
+        window.scroll(0, this.cates[this.active].scrollY)
       }, 20)
+    }
+  },
+  computed: {
+    cates () {
+      return this.categories.filter(v => v.is_top !== 0)
     }
   },
   components: {
@@ -100,14 +107,14 @@ export default {
         return v
       })
       this.categories = categories
-      console.log(this.categories[this.active].id)
+
       this._getPost(this.categories[this.active].id)
       // 将栏目列表存到localstorage
       localStorage.setItem('news_info', JSON.stringify(this.categories))
     },
     // 获取文章列表
     async _getPost (id, pageIndex = 1, pageSize = 10) {
-      const cate = this.categories[this.active]
+      const cate = this.cates[this.active]
       if (cate.finished) return
       const { data: res } = await this.$axios.get('/post', {
         params:

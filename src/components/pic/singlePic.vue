@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div class="singlePic">
+    <router-link tag="div" class="singlePic" :to="`/postDetail/${data.id}`">
         <div class="content">
            <h4>{{data.title}}</h4>
           <p class="comments">{{data.user.nickname}} {{data.comment_length}}跟贴</p>
         </div>
         <img :src="$axios.defaults.baseURL+data.cover[0].url" alt="">
-      </div>
+  </router-link>
   </div>
 </template>
 

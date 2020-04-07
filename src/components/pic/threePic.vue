@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div class="threePic">
+      <router-link tag="div" class="threePic" :to="`/postDetail/${data.id}`">
         <h4>{{data.title}}</h4>
         <div class="imglist">
           <img :src="$axios.defaults.baseURL+img.url"  v-for="(img,index) in data.cover" :key='index' :class="index!=0 ? 'boder-left':''">
         </div>
         <p class="comments">{{data.user.nickname}}  {{data.comment_length}}跟贴</p>
-      </div>
+      </router-link>
   </div>
 </template>
 

@@ -42,6 +42,21 @@ const routes = [
     meta: {
       Authorazation: true
     }
+  },
+  {
+    path: '/catemanage',
+    component: () => import('../views/CateManage.vue')
+  }, {
+    path: '/search',
+    component: () => import('../views/Search.vue')
+  },
+  {
+    path: '/postDetail/:id',
+    component: () => import('../views/Post_detail.vue')
+  },
+  {
+    path: '/video/:id',
+    component: () => import('../views/Video.vue')
   }
 ]
 

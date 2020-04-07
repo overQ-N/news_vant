@@ -62,7 +62,9 @@ export default {
       sessionStorage.setItem('news_token', JSON.stringify(userinfo))
       // if (res.meta.status !== 200) return this.$toast.fail(res.meta.msg)
       this.$toast.success('登录成功')
-      this.$router.push('/personal')
+      // 如果有跳转而来的路径，跳转回去，否则到首页
+      console.log(this.$route.query)
+      this.$route.query.formUrl ? this.$router.push(this.$route.query.formUrl) : this.$router.push('/')
     },
     regist () {
       this.$router.push('/regist')

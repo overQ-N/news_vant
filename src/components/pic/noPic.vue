@@ -1,5 +1,5 @@
 <template>
-  <div class="noPic">
+  <router-link tag='div' class="noPic" :to="`/video/${data.id}`">
     <h4>{{data.title}}</h4>
     <div class="img">
       <div class="mask">
@@ -8,7 +8,7 @@
       <img :src="$axios.defaults.baseURL+data.cover[0].url" alt />
     </div>
     <p class="comments">{{data.user.nickname}} {{data.comment_length}}跟贴</p>
-  </div>
+  </router-link>
 </template>
 
 <script>

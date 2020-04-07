@@ -2,9 +2,10 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import axios from 'axios'
-// import qs from 'qs'
 import { Button, List, Toast, Form, Field, Uploader, Dialog, ActionSheet, Tab, Tabs } from 'vant'
 import store from './store'
+// import qs from 'qs'
+var app
 Vue.use(Button, Toast, Form, Field)
 Vue.use(Field)
 Vue.use(Form)
@@ -31,7 +32,16 @@ axios.interceptors.response.use(res => {
 }, err => {
   console.log(err.response)
   const { statusCode, message } = err.response.data
-  if (statusCode === 400) Toast.fail(message)
+  if (statusCode === 400) return Toast.fail(message)
+  if (statusCode === 403) {
+    const path = app.$route.path
+    app.$router.push({
+      path: '/login',
+      query: {
+        formUrl: path
+      }
+    })
+  }
   return Promise.reject(err)
 })
 Vue.filter('formatDate', (val) => {
@@ -47,7 +57,7 @@ const formatNumber = (n) => {
   n = n.toString()
   return n[1] ? n : '0' + n
 }
-new Vue({
+app = new Vue({
   store,
   router,
   render: h => h(App)
