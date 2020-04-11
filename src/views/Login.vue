@@ -50,7 +50,6 @@ export default {
         'login',
         this.loginForm
       )
-      console.log(res)
       this.$store.dispatch('getUserInfoAsync', res.data)
       const userinfo = {
         token: res.data.token,

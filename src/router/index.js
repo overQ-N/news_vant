@@ -57,6 +57,10 @@ const routes = [
   {
     path: '/video/:id',
     component: () => import('../views/Video.vue')
+  },
+  {
+    path: '/post-comments/:post_id',
+    component: () => import('../views/PostComments.vue')
   }
 ]
 

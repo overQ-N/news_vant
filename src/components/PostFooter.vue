@@ -2,7 +2,9 @@
   <div>
      <div class="fixed">
         <div class="share">
-          <input type="text" placeholder="发布评论">
+          <router-link tag="input"  placeholder="发布评论" :to="`/post-comments/${post.id}`">
+            <!-- <input type="text" placeholder="发布评论"> -->
+          </router-link>
         <i class="iconfont iconpinglun-">
           <span>{{post.comment_length>99?99:post.comment_length}}</span>
         </i>

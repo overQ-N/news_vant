@@ -4,6 +4,8 @@ import router from './router'
 import axios from 'axios'
 import { Button, List, Toast, Form, Field, Uploader, Dialog, ActionSheet, Tab, Tabs } from 'vant'
 import store from './store'
+// import moment from 'moment'
+// Vue.use(moment)
 // import qs from 'qs'
 var app
 Vue.use(Button, Toast, Form, Field)

@@ -5,15 +5,15 @@
       <router-link to="/search" tag="div" class="search-box">
         <i class="iconfont iconsearch"></i>搜索新闻
       </router-link>
-      <i class="iconfont iconwode"></i>
+      <router-link to='/personal'><i class="iconfont iconwode"></i></router-link>
     </div>
     <div class="tab">
       <van-tabs v-model="active" sticky swipeable  @scroll='handleScroll'>
         <van-tab v-for="item in cates"
         :title="item.name" :key="item.id" >
-           <!-- :immediate-check='false' -->
-          <van-list
 
+          <van-list
+          :immediate-check='false'
           v-model="item.loading" :finished="item.finished" finished-text="没有更多了" @load="onLoad">
             <div v-for="(item1,index) in item.list" :key="index">
               <SinglePic :data='item1'  v-if="item1.cover.length>0&&item1.type===1"/>
@@ -46,28 +46,7 @@ export default {
     }
   },
   mounted () {
-    const newstoken = JSON.parse(sessionStorage.getItem('news_token')) || {}
-    const token = newstoken.token ? newstoken.token : ''
-    const newsInfo = JSON.parse(localStorage.getItem('news_info')) || []
-    const hasFollow = newsInfo ? newsInfo.filter(v => v.name === '关注') : []
-    // 如果有本地数据
-    if (newsInfo.length !== 0) {
-      // 如果有token并且没有关注列表，重新请求
-      if (token && hasFollow.length === 0) {
-        this._getCategories()
-      } else if (!token && hasFollow.length > 0) { // 如果没有token但有关注列表，重新请求
-        this._getCategories()
-      } else {
-        this.categories = newsInfo
-      }
-    } else {
-      // 如果没有本地数据
-      if (token) {
-        this._getCategories() // 如果有登录，获取关注列表数据
-      } else {
-        this._getCategories() // 如果没有登录，获取头条列表数据
-      }
-    }
+    this.reload()
   },
   watch: {
     active () {
@@ -75,7 +54,6 @@ export default {
         this.$router.push('/catemanage')
       }
       // this.list = []
-      console.log(this.cates)
       this._getPost(this.cates[this.active].id)
       setTimeout(() => {
         window.scroll(0, this.cates[this.active].scrollY)
@@ -134,6 +112,41 @@ export default {
     handleScroll ({ scrollTop }) {
       if (this.categories.length === 0) return
       this.categories[this.active].scrollY = scrollTop
+    },
+    // 初
+    reload () {
+      const newstoken = JSON.parse(sessionStorage.getItem('news_token')) || {}
+      const token = newstoken.token ? newstoken.token : ''
+      const newsInfo = JSON.parse(localStorage.getItem('news_info')) || []
+      const hasFollow = newsInfo ? newsInfo.filter(v => v.name === '关注') : []
+      // 如果有本地数据
+      if (newsInfo.length !== 0) {
+      // 如果有token并且没有关注列表，重新请求
+        if (token && hasFollow.length === 0) {
+          this._getCategories()
+        } else if (!token && hasFollow.length > 0) { // 如果没有token但有关注列表，重新请求
+          this._getCategories()
+        } else {
+          this.categories = newsInfo
+          this._getPost(this.cates[this.active].id)
+        }
+      } else {
+      // 如果没有本地数据
+        if (token) {
+          this._getCategories() // 如果有登录，获取关注列表数据
+        } else {
+          this._getCategories() // 如果没有登录，获取头条列表数据
+        }
+      }
+    }
+  },
+  beforeRouteEnter (to, from, next) {
+    if (from.path === '/catemanage') {
+      next(vm => {
+        vm.reload()
+      })
+    } else {
+      next()
     }
   }
 }
